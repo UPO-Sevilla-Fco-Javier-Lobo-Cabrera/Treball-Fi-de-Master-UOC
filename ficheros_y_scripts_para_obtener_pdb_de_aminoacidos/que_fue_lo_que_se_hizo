@@ -4,8 +4,8 @@ A continuación se obtuvieron los archivos pdb mediante:
 sudo apt-get install openbabel
 babel infile.mol outfile.pdb
 
-En realiad ambas acciones se realizarionhicieron por scripts.
+En realiad ambas acciones se realizarion hicieron por los dos scripts de este directrio.
 
-E fichero PDB de ser tenía los átomos como HETATM en lugar de como ATOM, y esto daba problemas (--> se cambiaron manualmente a ATOM). Además fue necesario añadir una columna que señalara la cadena A.
+El fichero PDB de Serina tenía los átomos como HETATM en lugar de como ATOM, y esto daba problemas (--> se cambiaron manualmente a ATOM). Además fue necesario añadir una columna que señalara la cadena A.
 
 
