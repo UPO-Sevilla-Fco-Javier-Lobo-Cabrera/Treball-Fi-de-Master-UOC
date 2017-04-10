@@ -1,0 +1,12 @@
+Primero se obtuvo en PDBank el fichero .sdf de la estructura de cada aminoácido (por ejemplo de arg en https://www3.rcsb.org/ligand/ARG). De las opciones de model y ideal, se escogió la de ideal por lo discutido en https://www.researchgate.net/post/When_I_download_a_PDB_ligand_file_there_is_two_types_of_file_IDEAL_and_MODEL_Whats_the_difference  y por el término ideal y model del artículo The chemical component dictionary: complete descriptions of constituent molecules in experimentally determined 3D macromolecules in the Protein Data Bank.
+
+A continuación se obtuvieron los archivos pdb mediante:
+sudo apt-get install openbabel
+babel infile.mol outfile.pdb
+
+(bueno ambas cosas se hicieron por scripts)
+
+Ojo el fichero PDB de ser tenía los átomos como HETATM en lugar de como ATOM, y esto daba problemas (--> los tuve que cambiar manualmente a ATOM). Además fue necesario cambiar más cosas para que estuviera bien el archivo (añadir una columna que dijera A (de cadena A)
+
+ojo no se están teniendo en cuenta los aas SEC y PYL (PORQUE NO ESTÁN DEFINIDOS EN chi_atoms) --> PE LAS SELENOPROTEÍNAS NO PODRÍAN INCLUIRSE
+
