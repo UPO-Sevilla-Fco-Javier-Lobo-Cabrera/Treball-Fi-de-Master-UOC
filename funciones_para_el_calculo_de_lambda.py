@@ -1,3 +1,5 @@
+#Este modulo contiene dos funciones de aplicacion para el calculo
+#del parametro lambda.
 
 import sys
 import math
@@ -83,7 +85,7 @@ def calcular_la_contribucion_a_lambda_de_un_residuo(nombre_res, angulos_chi, inf
 
 	#El segundo parametro de entrada ha de ser un diccionario gene-
 	#rado por la funcion predictor.calculate_chi_angles . Contiene
-    #los angulos chi obtenidos del residuo a estudiar.
+        #los angulos chi obtenidos del residuo a estudiar.
 	
 	#El tercer parametro de entrada ha de ser una lista de listas
 	#retornada por la funcion leer_fichero_angulos_chi_equilibrio .
