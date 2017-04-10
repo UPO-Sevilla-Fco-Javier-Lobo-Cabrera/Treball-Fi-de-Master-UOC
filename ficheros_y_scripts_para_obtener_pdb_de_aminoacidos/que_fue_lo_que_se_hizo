@@ -4,9 +4,8 @@ A continuación se obtuvieron los archivos pdb mediante:
 sudo apt-get install openbabel
 babel infile.mol outfile.pdb
 
-(bueno ambas cosas se hicieron por scripts)
+En realiad ambas acciones se realizarionhicieron por scripts.
 
-Ojo el fichero PDB de ser tenía los átomos como HETATM en lugar de como ATOM, y esto daba problemas (--> los tuve que cambiar manualmente a ATOM). Además fue necesario cambiar más cosas para que estuviera bien el archivo (añadir una columna que dijera A (de cadena A)
+E fichero PDB de ser tenía los átomos como HETATM en lugar de como ATOM, y esto daba problemas (--> se cambiaron manualmente a ATOM). Además fue necesario añadir una columna que señalara la cadena A.
 
-ojo no se están teniendo en cuenta los aas SEC y PYL (PORQUE NO ESTÁN DEFINIDOS EN chi_atoms) --> PE LAS SELENOPROTEÍNAS NO PODRÍAN INCLUIRSE
 
