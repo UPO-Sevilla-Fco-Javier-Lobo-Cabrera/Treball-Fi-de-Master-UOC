@@ -1,6 +1,7 @@
+import os
 
 def transformacion_de_unidades_a_nm(val):
-    "Devuelve el valor en nanomolar a partir de datos en uM o pM, (pe '2uM')"
+    "Devuelve el valor en nanomolar a partir de datos en fM, uM .. (pe '2uM')"
 
     #Parte numerica de val:
     numer = ""
@@ -20,30 +21,61 @@ def transformacion_de_unidades_a_nm(val):
         else:
             auxil = 1
             numer = float(numer)
-            #Si se trata de micrometros:            
+            #Si se trata de milimolar:            
+            if val[ind] == "m":
+                numer = numer * 1000000
+            #Si se trata de micromolar:            
             if val[ind] == "u":
                 numer = numer * 1000
-            #Si se trata de picometros:            
+            #Si se trata de picomolar:            
             if val[ind] == "p":
                 numer = numer / 1000
+            #Si se trata de fentomolar:            
+            if val[ind] == "f":
+                numer = numer / 1000000
    
     return(numer) 
                 
-   
-    
 
 
-def encontrar_coincidencias(ruta_fichero_dockground, ruta_fichero_termodinamico):
-    "Devolver coincidencias entre DOCKGROUND y la base de datos termodinamica"
-    
-    #Fichero Dockground:
-    f=open(ruta_fichero_dockground,"r")
-    lis = f.readlines()
-    f.close()
+def coincidencias_fichero_termodinamico_y_estructuras_pdb_benchmark(ruta_fichero_termodinamico, ruta_absoluta_directorio_benchmark_structures):
+    "Devuelve coincidencias entre benchmark y la base de datos termodinamica"
 
     #Fichero base de datos termodinamicos tipo INDEX_general_PP.2016 PDBBind:
     f=open(ruta_fichero_termodinamico,"r")
+    lis = f.readlines()
+    f.close()
+
+    #Lista de ficheros pdb en directorio de benchmark structures:
+    ficheros_pdb_benchmark_structures = []
+    for f in os.listdir(ruta_absoluta_directorio_benchmark_structures):
+        ficheros_pdb_benchmark_structures.append(f)
+
+    #Lista de coincidencias:
+    coinc = []
+
+    for i in lis:
+        #Si hay coincidencia del elemento (codigo PDB) y todavia no ha
+        #sido registrado entonces se registra en coinc:
+        for j in ficheros_pdb_benchmark_structures:
+            if ((i[0:4].upper() in j) and (i[0:4] not in coinc)):
+                coinc.append(i[0:4])
+
+    return(coinc)
+    
+
+
+def coincidencias_fichero_termodinamico_y_fichero_dockground(ruta_fichero_termodinamico, ruta_fichero_dockground):
+    "Devuelve coincidencias la base de datos termodinamica y DOCKGROUND"
+   
+    #Fichero base de datos termodinamicos tipo INDEX_general_PP.2016 PDBBind:
+    f=open(ruta_fichero_termodinamico,"r")
     lis2 = f.readlines()
+    f.close()
+ 
+    #Fichero Dockground:
+    f=open(ruta_fichero_dockground,"r")
+    lis = f.readlines()
     f.close()
 
     #Lista de coincidencias:
@@ -102,90 +134,3 @@ def extraer_cte_disociacion(lista_complejos_pdb, ruta_fichero_termodinamico):
                             aux = 1
     
     return(tuplas)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                            
-                    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
