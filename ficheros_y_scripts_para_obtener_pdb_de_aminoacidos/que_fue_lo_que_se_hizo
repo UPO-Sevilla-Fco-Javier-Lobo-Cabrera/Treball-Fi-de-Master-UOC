@@ -6,6 +6,8 @@ babel infile.mol outfile.pdb
 
 En realiad ambas acciones se realizarion hicieron por los dos scripts de este directrio.
 
-El fichero PDB de Serina tenía los átomos como HETATM en lugar de como ATOM, y esto daba problemas (--> se cambiaron manualmente a ATOM). Además fue necesario añadir una columna que señalara la cadena A.
+El fichero PDB de Serina tenía los átomos como HETATM en lugar de como ATOM, y esto daba problemas 
+(--> se cambiaron manualmente a ATOM). Además fue necesario añadir una columna que señalara la cadena A. Asimismo,
+fue necesario renombrar sus átomos adecuadamente, tomando como plantilla https://files.rcsb.org/ligands/view/SER.cif
 
 
