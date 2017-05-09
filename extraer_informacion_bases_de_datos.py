@@ -60,7 +60,10 @@ def coincidencias_fichero_termodinamico_y_estructuras_pdb_benchmark(ruta_fichero
         for j in ficheros_pdb_benchmark_structures:
             if ((i[0:4].upper() in j) and (i[0:4] not in coinc)):
                 coinc.append(i[0:4])
-
+    
+    for i in coinc:
+        i = i.upper()
+    
     return(coinc)
     
 
@@ -134,3 +137,21 @@ def extraer_cte_disociacion(lista_complejos_pdb, ruta_fichero_termodinamico):
                             aux = 1
     
     return(tuplas)
+
+
+
+
+
+
+                            
+                    
+
+
+
+
+
+
+
+
+
+
