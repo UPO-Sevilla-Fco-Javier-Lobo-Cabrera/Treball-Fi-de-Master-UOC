@@ -1,31 +1,41 @@
 
-
 from lightdock.pdbutil.PDBIO import parse_complex_from_file
 from lightdock.structure.complex import Complex
 from lightdock.rotamer.predictor import calculate_chi_angles
 import sys
 import os
-import extraer_infor_bases_de_datos
+import extraer_informacion_bases_de_datos
 import alineamientos_estruc
 import func_lambda
 import primer_indice_res
 
+print "Bienvenido:"
+
+try:
+    f = open("datos_input", "r")
+except:
+    print "Este programa necesita de un fichero de input llamado datos_input localizado en el mismo directorio que este script de Python. En dicho fichero, han de incluirse los siguientes datos, uno en cada linea: \nRuta del fichero termodinamico de tipo INDEX_general_PP.2016 de la base de datos PDBbind. \nRuta del directorio que contiene las estructuras .pdb de tipo de la base de datos benchmark. \nRuta del directorio que contiene los modulos de Python y scripts de R en general utilizados, asi como el fichero de angulos chi de equilibrio. \nRuta del script de R en particular para analizar los alineamientos estructurales. \nRuta del ejecutable de lovoalign.\nAtencion: las rutas de los directorios deben acabar en barra invertida (backslash)."
+    sys.exit()
+
+datos_fich_input = f.read().splitlines()
+
+
 #Ruta del fichero termodinamico:
-f_ter = "INDEX_general_PP.2016"
+f_ter = datos_fich_input[0]
 #Las rutas de los directorios deben acabar en "/":
 #Ruta del directorio de estructuras pdb benchmark:
-d_ben = "/home/lobo/Desktop/TFM_02_05_17_incompleto/benchmark5/structures/"
+d_ben = datos_fich_input[1]
 #El directorio de trabajo (d_trab) contiene los modulos de Python y R:
-d_trab = "/home/lobo/Desktop/TFM_02_05_17_incompleto/"
+d_trab = datos_fich_input[2]
 #Ruta del codigo en R auxiliar para analizar alineamiento estructural:
-r_lin = "/home/lobo/Desktop/TFM_02_05_17_incompleto/codigo_en_R_para_analizar_alineamiento_estructural.R"
+r_lin = datos_fich_input[3]
 #Ruta del ejecutable de lovoalign. Nota: Si al ejecutar el programa se
 #observa error de Fortran "Sementation fault" entonces acudir al directorio
 #de lovoalign => src/sizes.f90 y disminuir maxatom por ejemplo a 3500
 #y maxfile a 5000, volver a compilar y probar con el nuevo ejecutable. Sin
 #embargo, es posible que asi queden algunos complejos sin analizar por superar
 #o bien el ligando o bien el receptor ese numero de atomos.
-r_lov = "lovoalign"
+r_lov = datos_fich_input[4]
 
 
 
@@ -74,7 +84,7 @@ if "angulos_chi_equilibrio" not in elementos_directorio_trabajo:
 if "archivos_temporales" not in elementos_directorio_trabajo:
     crear_directorio = "mkdir " + d_trab + "archivos_temporales"
     os.system(crear_directorio)
-    print "\nAlineamientos estructurales. Este paso dura minutos.."
+    print "\nAlineamientos estructurales (15 min para el caso estandar)"
     os.system("sleep 15")
     #La siguiente linea tarda unos 15 min en ejecutarse para el caso estandar:
     alineamientos_estruc.calcular(tuplas, "archivos_temporales/", r_lov, d_ben)
@@ -88,7 +98,7 @@ if "otros_fich_temps" not in elementos_directorio_trabajo:
 
 
 
-print "\n\n\nAnalizando resultados de los alineamientos.."
+print "\n\n\nAnalizando resultados de los alineamientos (3 min)"
 
 #Contador de complejos satisfactoriamente analizados:
 comp_analizados = 0
@@ -129,7 +139,10 @@ for i in tuplas:
         ruta_pdb = d_ben + i[0].upper() + "_" + j + ".pdb"
         #Generacion del objeto Complex:
         atoms, residues, chains = parse_complex_from_file(ruta_pdb)
-        proteina_complejo = Complex(chains, atoms)
+        try:
+            proteina_complejo = Complex(chains, atoms)
+        except:
+            senal_analisis_comp = 1
 
         #Ruta del fichero con los resultados del alineamiento de la proteina
         #en cuestion con su par bound/unbound:
@@ -146,13 +159,13 @@ for i in tuplas:
         try:
             diferencia = primer_indice_res.buscar_primer_indice(ruta_pdb)
             w = 0
-            print res_cam
+            #print res_cam
             while w < len(res_cam):
                 res_cam[w] = int(res_cam[w]) - diferencia
                 w = w + 1
-            print res_cam
+            #print res_cam
         except:
-            pass   
+            senal_analisis_comp = 1
 
 
         #Calculo de la contribucion de lambda de la proteina en cuestion.
@@ -160,19 +173,17 @@ for i in tuplas:
         #los residuos indexados por res_cam:
 
         #Contador de residuos que no han podido ser analizados. Si supera el umbral
-        #de 1/5 de los residuos que cambian de esa proteina entonces el conjunto de
+        #de 1/10 de los residuos que cambian de esa proteina entonces el conjunto de
         #4 alineamientos al que pertenece la proteina no es contabilizado
         #(senal_analisis_comp valdria 1):
         residuos_con_errores = 0
         #Calculo de la contribucion de lambda de la proteina en cuestion:
         for h in res_cam:
-            print ".."
             #Senal de que ha habido un error analizando ese residuo:
             senal_error = 0
-
             #Creacion del objeto residuo:
             try:
-                residuo = complejo.residues[h]
+                residuo = proteina_complejo.residues[h]
             except:
                 residuos_con_errores = residuos_con_errores + 1
                 senal_error = 1
@@ -190,21 +201,7 @@ for i in tuplas:
                 if senal_error == 0:
                     residuos_con_errores = residuos_con_errores + 1 
                     senal_error = 1        
-            #A continuacion res_la se divide entre res_cam para asi normalizar la
-            #contribucion de lambda del residuo con respecto del total de residuos
-            #que cambian (asi lambda sera una magnitud intensiva y no extensiva, es
-            #decir, no dependera del numero de residuos que cambien). 
-            #Esto es equivalente --aunque menos intuitivo-- que sumar las
-            #contribuciones de todos los residuos y luego dividir entre el numero de
-            #de elementos de res_cam, pero de la manera empleada se trabaja con
-            #cantidades mas pequenas durante toda la ejecucion y esto disminuye el
-            #error de calculo computacional:
-            try:
-                res_la = res_la / len(res_cam)
-            except:
-                if senal_error == 0:
-                    residuos_con_errores = residuos_con_errores + 1 
-                    senal_error = 1 
+
             #Actualizacion de los valores de lambda de la proteina 
             #en cuestion si el residuo ha podido ser analizado:
             if senal_error == 0:
@@ -218,10 +215,10 @@ for i in tuplas:
                     lam_receptor_unbound = lam_receptor_unbound + res_la
 
                 
-        #Si para la proteina en cuestion 1/5 de los residuos que debian ser
+        #Si para la proteina en cuestion 1/10 de los residuos que debian ser
         #analizados no han podido ser analizados, entonces se descarta el 
-        #complejo del que forma parte la proteina para el ouput del programa:      
-        if residuos_con_errores >= (len(res_cam)/5):
+        #complejo del que forma parte la proteina para el ouput del programa:   
+        if residuos_con_errores >= (len(res_cam)/10):
             senal_analisis_comp = 1
     
     #Calculo del valor de lambda del complejo (si todo ha funcionado
@@ -230,22 +227,24 @@ for i in tuplas:
         lam_comp = lam_ligando_unbound + lam_receptor_unbound - (lam_ligando_bound + lam_receptor_bound)
         #Actualizacion de la lista de tuplas de resultados 
         #(lam_comp, cte_disociacion del complejo):
-        resul_fin.append(lam_comp, i[1])
+        par_lam_comp_cte_disoc = (lam_comp, i[1])
+        resul_fin.append(par_lam_comp_cte_disoc)
         #Actualizacion del contador de complejos analizados:
         comp_analizados = comp_analizados + 1
             
+g = open("resultados_output", "w")
 
-print resul_fin
+g.write("Los pares lambda - cte disoc son:\n")
+for i in resul_fin:
+    par_resultado = str(i[0]) + " " + str(i[1])
+    g.write(par_resultado)
+    g.write("\n")
 
-
-
-#Eliminacion de carpetas "nuevos_pdbs_bench", "archivos_temporales" y "carpeta_auxiliar_temporal":
-pass
+print "Fichero 'resultados_output' creado."
 
 
 if senal != 0:
-    print "\nAVISO: Solo se han procesado " + str(comp_analizados) + " de los " + str(len(tuplas)) + " complejos con coincidencias. Pruebe a aumentar la variable maxatom en el codigo fuente de Lovoalign (fichero src/sizes.f90). Como contrapartida, puede que el software no funcione ya que requerira de mas memoria RAM."
-
+    print "\nAVISO: Solo se han podido procesar finalmente " + str(comp_analizados) + " de los " + str(len(tuplas)) + " complejos con coincidencias. Pruebe a aumentar la variable maxatom en el codigo fuente de Lovoalign (fichero src/sizes.f90). Como contrapartida, puede que el software no funcione ya que requerira de mas memoria RAM."
 
 
 
