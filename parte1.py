@@ -18,6 +18,7 @@ except:
     sys.exit()
 
 datos_fich_input = f.read().splitlines()
+f.close()
 
 
 #Ruta del fichero termodinamico:
@@ -240,24 +241,13 @@ for i in resul_fin:
     g.write(par_resultado)
     g.write("\n")
 
+g.close()
+
 print "Fichero 'resultados_output' creado."
 
 
 if senal != 0:
     print "\nAVISO: Solo se han podido procesar finalmente " + str(comp_analizados) + " de los " + str(len(tuplas)) + " complejos con coincidencias. Pruebe a aumentar la variable maxatom en el codigo fuente de Lovoalign (fichero src/sizes.f90). Como contrapartida, puede que el software no funcione ya que requerira de mas memoria RAM."
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
