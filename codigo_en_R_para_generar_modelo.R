@@ -11,19 +11,23 @@
 #Lectura de los parámetros:
 
 lectura_lambda <- read.table("lambda.txt")
-
 lambda <- lectura_lambda$V1
 
-
 lectura_Kd <- read.table("Kd.txt")
-
 Kd <- lectura_Kd$V1
 
 #Creación del modelo lineal:
 lambda_cuadrado <- lambda ^2
 modelo_lineal <- lm(Kd ~ lambda_cuadrado + lambda)
 
-#A continuación se imprime el modelo lineal:
-print(modelo_lineal)
+#A continuación se calculan la desviación típica y coeficientes del modelo
+#y se imprimen en el archivo modelo_lineal.txt:
+desviacion_tipica_modelo <- sigma(modelo_lineal)
+coeficientes_del_modelo <- as.numeric(modelo_lineal$coefficients)
+
+write(desviacion_tipica_modelo, file = "modelo_lineal.txt")
+write(coeficientes_del_modelo[1], file = "modelo_lineal.txt", append = TRUE)
+write(coeficientes_del_modelo[2], file = "modelo_lineal.txt", append = TRUE)
+write(coeficientes_del_modelo[3], file = "modelo_lineal.txt", append = TRUE)
 
 
