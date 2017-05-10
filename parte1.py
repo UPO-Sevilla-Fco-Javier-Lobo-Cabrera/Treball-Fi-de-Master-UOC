@@ -9,8 +9,6 @@ import alineamientos_estruc
 import func_lambda
 import primer_indice_res
 
-print "Bienvenido:"
-
 try:
     f = open("datos_input", "r")
 except:
