@@ -54,7 +54,7 @@ def calcular(tuplas_trabajo, ruta_directorio_de_output, ruta_ejecutable_lovoalig
         print ".."
 
     #d) Calculo de alineamientos estructurales del receptor en estado unbound con el 
-    #receptor en estado uound:
+    #receptor en estado bound:
     print "Calculando alineamientos estructurales (Paso4/4) ..."
     for i in tuplas_trabajo:
         j = i[0]
