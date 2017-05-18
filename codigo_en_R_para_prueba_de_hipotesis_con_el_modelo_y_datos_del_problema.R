@@ -1,13 +1,13 @@
 #!/usr/bin/env Rscript
 
 #Este script de R generará un fichero denominado 
-#"resultado_se_rechaza_hipótesis.txt" o bien un 
-#fichero llamado
-#"resultado_NO_se_rechaza_hipótesis.txt". Se dará 
+#"sobre_el_rechazo_de_la_hipotesis.txt", en el 
+#que se imprimirá la palabra "SI" o bien la
+#palabra "NO". Se dará 
 #el primer caso si se rechaza que los datos de la 
 #simulación problema concuerden con los del modelo
-#lineal. Si no sé rechaza la hipótesis, se creará 
-#el segundo fichero.
+#lineal. Si no se rechaza la hipótesis, se dará
+#el segundo caso.
 
 #Paso 1:
 #Lectura de parámetros del modelo lineal a partir de
