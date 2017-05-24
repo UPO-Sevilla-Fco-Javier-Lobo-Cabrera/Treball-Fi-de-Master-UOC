@@ -1,4 +1,6 @@
 import os
+import parte1
+import parte2
 
 print "Bienvenido, introduzca (1) si desea solo generar un modelo lineal, (2) si desea testear unos datos frente al modelo generado, o (3) si desea testear unos datos frente a un modelo proporcionado por usted:"
 
