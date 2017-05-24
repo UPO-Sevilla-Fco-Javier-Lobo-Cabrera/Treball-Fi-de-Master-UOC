@@ -243,7 +243,23 @@ g.close()
 
 print "Fichero 'resultados_output' creado."
 
+#Creación del modelo lineal:
+g = open("lambda.txt", "w")
+for i in resul_fin:
+    g.write(str(i[0]))
+    g.write("\n")
+g.close()
 
+g = open("Kd.txt", "w")
+for i in resul_fin:
+    g.write(str(i[1]))
+    g.write("\n")
+g.close()
+
+os.system("Rscript codigo_en_R_para_generar_modelo.R")
+
+
+#Fin:
 if senal != 0:
     print "\nAVISO: Solo se han podido procesar finalmente " + str(comp_analizados) + " de los " + str(len(tuplas)) + " complejos con coincidencias. Pruebe a aumentar la variable maxatom en el codigo fuente de Lovoalign (fichero src/sizes.f90). Como contrapartida, puede que el software no funcione ya que requerira de mas memoria RAM."
 
